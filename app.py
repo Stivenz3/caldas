@@ -822,6 +822,48 @@ with st.expander("🗺️ Cobertura Territorial — Municipios de Caldas atendid
         st.markdown("**🏔️ Turismo de Aventura**\n- Villamaría (Nevado)\n- La Dorada\n- Samaná\n- Riosucio")
     st.markdown("> 📊 **Fuente:** Plan de Desarrollo Turístico de Caldas 2024-2027 · Gobernación de Caldas\n> 🎯 **Meta:** 1.840 micro-empresarios turísticos rurales — DANE 2023")
 
+    st.markdown("---")
+    st.markdown("#### 🚀 Escalabilidad — Más allá de Caldas")
+    st.markdown("""
+    El sistema está construido de forma modular y puede replicarse a cualquier departamento turístico de Colombia
+    con solo actualizar los datos locales:
+    """)
+    col_e1, col_e2, col_e3 = st.columns(3)
+    with col_e1:
+        st.markdown("""
+        **Fase 1 — Caldas** ✅
+        - 27 municipios
+        - 4 tipos de empresario
+        - Eje Cafetero / PCC
+        - 1.840 beneficiarios
+        """)
+    with col_e2:
+        st.markdown("""
+        **Fase 2 — Eje Cafetero** 🔧
+        - + Risaralda (14 mun.)
+        - + Quindío (12 mun.)
+        - Ruta del Café nacional
+        - ~5.000 beneficiarios
+        """)
+    with col_e3:
+        st.markdown("""
+        **Fase 3 — Colombia** 🎯
+        - Caribe, Pacífico, Amazonas
+        - Multiidioma (inglés, francés)
+        - API pública para operadores
+        - +50.000 micro-empresarios
+        """)
+    st.markdown("""
+    <div style="background:#edf7ed; border-left:4px solid #2e7d32; border-radius:6px; padding:10px 14px; margin-top:8px;">
+      <strong style="color:#1b5e20;">💡 Clave de escalabilidad</strong><br>
+      <span style="color:#2e7d32; font-size:0.9rem;">
+      La arquitectura modular (perfiles en diccionario, eventos en JSON, IA intercambiable)
+      permite agregar un nuevo departamento en menos de 2 horas de desarrollo,
+      sin cambiar nada del motor de predicción ni de la integración con Telegram.
+      </span>
+    </div>
+    """, unsafe_allow_html=True)
+
 # =============================================================================
 # SECCIÓN: HISTORIAL DE PREDICCIONES EN SESIÓN
 # =============================================================================
@@ -876,15 +918,13 @@ with st.expander("🏗️ Arquitectura Técnica (para jurados)"):
     </pre>
     """, unsafe_allow_html=True)
     st.markdown("""
-    **Roadmap hacia producción (post-hackathon):**
-    - 🌤️ OpenWeatherMap API — clima en tiempo real por municipio (ya integrado, pendiente activación)
+    **Roadmap hacia producción para escalar:**
+    - 🌤️ OpenWeatherMap API — clima en tiempo real por municipio
     - 📊 Google Trends — índice de demanda turística como señal adelantada
     - 🗄️ PostgreSQL — historial de predicciones y aprendizaje por temporada
     - 📱 WhatsApp Business API (Meta/Twilio) — canal nativo del campesino
-    - 🔐 Firebase Auth — acceso multi-empresario con perfil personalizado
     - 📡 LoRa/Meshtastic — alertas sin internet para zonas sin cobertura
 
-    **Impacto estimado con adopción masiva:** +30% reducción de desperdicio · +20% ocupación · cobertura 27 municipios de Caldas
+    **Impacto estimado con adopción masiva:** +30% reducción de desperdicio · +20% ocupación · cobertura 27 municipios de Caldas 
     """)
 
-st.caption("Desarrollado con ❤️ para el Hackathon Colombia 5.0 · Manizales, Caldas 🇨🇴")
