@@ -393,24 +393,30 @@ with st.sidebar:
     st.markdown("## ⚙️ Panel de Config.")
     st.markdown("---")
 
-    # ── Leer secrets de Streamlit Cloud (si existen) ──────────────────────
-    _s = st.secrets if hasattr(st, "secrets") else {}
-    _groq_secret     = _s.get("GROQ_API_KEY", "")
-    _tg_token_secret = _s.get("TELEGRAM_TOKEN", "")
-    _tg_chat_secret  = _s.get("TELEGRAM_CHAT_ID", "")
-    _prov_secret     = _s.get("PROVEEDOR_DEFAULT", "")
-    _modelo_secret   = _s.get("MODELO_DEFAULT", "")
-    modo_publico     = bool(_groq_secret)   # True cuando hay keys en secrets
+    # ── Leer secrets de Streamlit Cloud de forma segura ───────────────────
+    def _get_secret(key: str, default: str = "") -> str:
+        try:
+            return str(st.secrets[key])
+        except Exception:
+            return default
+
+    _groq_secret     = _get_secret("GROQ_API_KEY")
+    _tg_token_secret = _get_secret("TELEGRAM_TOKEN")
+    _tg_chat_secret  = _get_secret("TELEGRAM_CHAT_ID")
+    _prov_secret     = _get_secret("PROVEEDOR_DEFAULT")
+    _modelo_secret   = _get_secret("MODELO_DEFAULT")
+    modo_publico     = bool(_groq_secret)
 
     if modo_publico:
         # ── Modo público: keys ocultas, solo parámetros de contexto visibles ──
-        st.success("✅ Sistema activo — IA configurada")
-        st.caption("Ajusta el contexto y genera tu predicción.")
         proveedor = _prov_secret or "Groq (Gratis, sin tarjeta)"
-        api_key   = _groq_secret
+        api_key   = _groq_secret.strip()
         modelo_ia = _modelo_secret or "llama-3.3-70b-versatile"
         telegram_token   = _tg_token_secret
         telegram_chat_id = _tg_chat_secret
+        # Diagnóstico: muestra los primeros 8 caracteres para verificar que llegó
+        st.success(f"✅ Sistema activo · Key cargada: `{api_key[:8]}...`")
+        st.caption("Ajusta el contexto y genera tu predicción.")
     else:
         # ── Modo demo local: muestra los campos para ingresar keys manualmente ──
         st.info("🔧 Modo local — ingresa tus API Keys")
