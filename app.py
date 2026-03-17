@@ -883,7 +883,7 @@ if st.session_state.historial:
 # FOOTER CON ARQUITECTURA TÉCNICA (útil para explicar a los jurados)
 # =============================================================================
 st.markdown("---")
-with st.expander("🏗️ Arquitectura Técnica (para jurados)"):
+with st.expander("🏗️ Arquitectura Técnica"):
     st.markdown("""
     **Stack Tecnológico — lo que corre hoy:**
     - 🖥️ **Frontend/UI:** Streamlit (Python) — diseño mobile-first, desplegado en Streamlit Community Cloud
