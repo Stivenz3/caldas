@@ -841,40 +841,50 @@ if st.session_state.historial:
 # FOOTER CON ARQUITECTURA TÉCNICA (útil para explicar a los jurados)
 # =============================================================================
 st.markdown("---")
-with st.expander("🏗️ Arquitectura Técnica"):
+with st.expander("🏗️ Arquitectura Técnica (para jurados)"):
     st.markdown("""
-    **Stack Tecnológico:**
-    - 🖥️ **Frontend:** Streamlit (Python) — diseño mobile-first
-    - 🤖 **IA Core:** Google Gemini 1.5 Flash via Google AI Studio (gratuito)
-    - 🤖 **IA Core:** Groq via OpenAI API (gratuito)
-    - 📡 **Datos:** Mock data en memoria (en producción: OpenWeather API + Google Calendar API de Caldas)
-    - 🔒 **Seguridad:** API Key solo en memoria de sesión, nunca en disco
+    **Stack Tecnológico — lo que corre hoy:**
+    - 🖥️ **Frontend/UI:** Streamlit (Python) — diseño mobile-first, desplegado en Streamlit Community Cloud
+    - 🤖 **IA Core:** Groq API con modelo `llama-3.3-70b-versatile` (gratuito, ~200ms de respuesta)
+    - 📲 **Mensajería real:** Telegram Bot API — mensaje llega al celular físico del empresario
+    - 🧠 **Motor de reglas:** Lógica Python en memoria — cruza clima × evento para calcular ocupación base
+    - 📦 **Datos:** Diccionarios Python con 4 perfiles, 11 eventos y 4 climas de Caldas (hardcodeados para MVP)
+    - 🔒 **Seguridad:** API Keys almacenadas en Streamlit Secrets (encriptadas), nunca expuestas en código
+    - 🗃️ **Historial:** `st.session_state` — persiste predicciones durante la sesión activa
+    - 🌐 **Deploy:** GitHub → Streamlit Community Cloud (CI/CD automático en cada push)
+
+    **Proveedores de IA disponibles:**
+    - ✅ **Groq** (activo) — `llama-3.3-70b-versatile`, `llama3-8b-8192`, `mixtral-8x7b-32768`
+    - ⚙️ **Google Gemini** (alternativa) — `gemini-2.0-flash`, `gemini-2.0-flash-lite`
 
     **Flujo de datos:**
     """, unsafe_allow_html=True)
     st.markdown("""
     <pre style="background:#1a1a1a; color:#ffffff; border-radius:8px; padding:14px 18px;
                 font-family:monospace; font-size:0.88rem; line-height:1.7; margin:6px 0;">
-Micro-empresario selecciona contexto
+[Usuario] Selecciona perfil + clima + evento
      ↓
-Motor de reglas (multiplicadores clima × evento)
+[Motor de reglas] Multiplica factores → Ocupación base %
      ↓
-Prompt enriquecido → Groq / Google Gemini
+[Prompt builder] Arma contexto rico con datos del empresario
      ↓
-Mensaje en lenguaje natural → UI tipo WhatsApp
+[Groq API] llama-3.3-70b genera mensaje en jerga colombiana
      ↓
-Envío real al celular → Telegram Bot API
+[UI] Muestra burbuja estilo WhatsApp + métricas de impacto
+     ↓
+[Telegram Bot API] Envía alerta al celular real del empresario
     </pre>
     """, unsafe_allow_html=True)
     st.markdown("""
-    **Escalabilidad hacia producción:**
-    - Reemplazar mock de clima con OpenWeather API (ya estructurado)
-    - Base de datos PostgreSQL para histórico de predicciones
-    - Envío real por WhatsApp Business API (Twilio / Meta)
-    - Dashboard analítico con Plotly para tendencias históricas
-    - Autenticación con Firebase Auth para múltiples empresarios
+    **Roadmap hacia producción (post-hackathon):**
+    - 🌤️ OpenWeatherMap API — clima en tiempo real por municipio (ya integrado, pendiente activación)
+    - 📊 Google Trends — índice de demanda turística como señal adelantada
+    - 🗄️ PostgreSQL — historial de predicciones y aprendizaje por temporada
+    - 📱 WhatsApp Business API (Meta/Twilio) — canal nativo del campesino
+    - 🔐 Firebase Auth — acceso multi-empresario con perfil personalizado
+    - 📡 LoRa/Meshtastic — alertas sin internet para zonas sin cobertura
 
-    **Impacto estimado:** +30% reducción de desperdicio de insumos, +20% en ocupación por mejor preparación.
+    **Impacto estimado con adopción masiva:** +30% reducción de desperdicio · +20% ocupación · cobertura 27 municipios de Caldas
     """)
 
 st.caption("Desarrollado con ❤️ para el Hackathon Colombia 5.0 · Manizales, Caldas 🇨🇴")
