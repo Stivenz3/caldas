@@ -393,33 +393,64 @@ with st.sidebar:
     st.markdown("## ⚙️ Panel de Config.")
     st.markdown("---")
 
-    # Selector de proveedor de IA
-    proveedor = st.selectbox(
-        "🧠 Proveedor de IA",
-        options=["Groq (Gratis, sin tarjeta)", "Google Gemini (AI Studio)"],
-        index=0,
-        help="Groq es la opción más fácil y gratuita",
-    )
+    # ── Leer secrets de Streamlit Cloud (si existen) ──────────────────────
+    _s = st.secrets if hasattr(st, "secrets") else {}
+    _groq_secret     = _s.get("GROQ_API_KEY", "")
+    _tg_token_secret = _s.get("TELEGRAM_TOKEN", "")
+    _tg_chat_secret  = _s.get("TELEGRAM_CHAT_ID", "")
+    _prov_secret     = _s.get("PROVEEDOR_DEFAULT", "")
+    _modelo_secret   = _s.get("MODELO_DEFAULT", "")
+    modo_publico     = bool(_groq_secret)   # True cuando hay keys en secrets
 
-    # Instrucciones según proveedor
-    if "Groq" in proveedor:
-        st.caption("Obtén tu key gratis en: console.groq.com")
-        api_key = st.text_input(
-            "🔑 API Key de Groq",
-            type="password",
-            placeholder="gsk_...",
-        )
+    if modo_publico:
+        # ── Modo público: keys ocultas, solo parámetros de contexto visibles ──
+        st.success("✅ Sistema activo — IA configurada")
+        st.caption("Ajusta el contexto y genera tu predicción.")
+        proveedor = _prov_secret or "Groq (Gratis, sin tarjeta)"
+        api_key   = _groq_secret
+        modelo_ia = _modelo_secret or "llama-3.3-70b-versatile"
+        telegram_token   = _tg_token_secret
+        telegram_chat_id = _tg_chat_secret
     else:
-        st.caption("Obtén tu key gratis en: aistudio.google.com/apikey")
-        api_key = st.text_input(
-            "🔑 API Key de Google AI Studio",
-            type="password",
-            placeholder="AIza...",
+        # ── Modo demo local: muestra los campos para ingresar keys manualmente ──
+        st.info("🔧 Modo local — ingresa tus API Keys")
+
+        proveedor = st.selectbox(
+            "🧠 Proveedor de IA",
+            options=["Groq (Gratis, sin tarjeta)", "Google Gemini (AI Studio)"],
+            index=0,
         )
+
+        if "Groq" in proveedor:
+            st.caption("Obtén tu key gratis en: console.groq.com")
+            api_key = st.text_input("🔑 API Key de Groq", type="password", placeholder="gsk_...")
+        else:
+            st.caption("Obtén tu key gratis en: aistudio.google.com/apikey")
+            api_key = st.text_input("🔑 API Key de Google AI Studio", type="password", placeholder="AIza...")
+
+        if "Groq" in proveedor:
+            modelo_ia = st.selectbox(
+                "🤖 Modelo IA",
+                options=["llama-3.3-70b-versatile", "llama3-8b-8192", "mixtral-8x7b-32768"],
+                index=0,
+            )
+        else:
+            modelo_ia = st.selectbox(
+                "🤖 Modelo IA",
+                options=["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-pro-exp-03-25"],
+                index=0,
+            )
+
+        st.markdown("---")
+        st.markdown("### 📬 Telegram")
+        telegram_token = st.text_input(
+            "🤖 Token del Bot", type="password", placeholder="123456789:ABC...",
+        )
+        telegram_chat_id = st.text_input("💬 Chat ID", placeholder="123456789")
 
     st.markdown("---")
 
-    # Selector de perfil
+    # ── Selectores de perfil y contexto — siempre visibles ────────────────
     perfil_elegido = st.selectbox(
         "👤 Micro-empresario",
         options=list(PERFILES.keys()),
@@ -429,51 +460,8 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 🌍 Contexto del Entorno")
 
-    # Selector de clima
-    clima_elegido = st.selectbox(
-        "🌤️ Clima actual",
-        options=list(CLIMAS.keys()),
-    )
-
-    # Selector de evento cercano
-    evento_elegido = st.selectbox(
-        "📅 Evento/Temporada cercana",
-        options=list(EVENTOS_CALDAS.keys()),
-    )
-
-    st.markdown("---")
-
-    # Modelo según proveedor
-    if "Groq" in proveedor:
-        modelo_ia = st.selectbox(
-            "🤖 Modelo IA",
-            options=["llama-3.3-70b-versatile", "llama3-8b-8192", "mixtral-8x7b-32768"],
-            index=0,
-            help="llama-3.3-70b es el más capaz en Groq",
-        )
-    else:
-        modelo_ia = st.selectbox(
-            "🤖 Modelo IA",
-            options=["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-pro-exp-03-25"],
-            index=0,
-            help="gemini-2.0-flash es gratuito y rápido",
-        )
-
-    st.markdown("---")
-    st.markdown("### 📬 Envío Real a Telegram")
-    st.caption("Gratis · Sin tarjeta · Mensaje llega al celular")
-
-    telegram_token = st.text_input(
-        "🤖 Token del Bot",
-        type="password",
-        placeholder="123456789:ABC...",
-        help="Créalo gratis con @BotFather en Telegram",
-    )
-    telegram_chat_id = st.text_input(
-        "💬 Chat ID",
-        placeholder="Tu número, ej: 123456789",
-        help="Escríbele /start a tu bot y luego usa @userinfobot para ver tu ID",
-    )
+    clima_elegido = st.selectbox("🌤️ Clima actual", options=list(CLIMAS.keys()))
+    evento_elegido = st.selectbox("📅 Evento/Temporada cercana", options=list(EVENTOS_CALDAS.keys()))
 
     st.markdown("---")
     st.caption("Caldas Predictivo 5.0 · Hackathon Colombia 5.0 · Manizales 2025")
